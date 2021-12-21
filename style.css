@@ -1,0 +1,31 @@
+body {
+  background-image: url(/images/matrixpokerbackground.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-grid {
+  height: 632px;
+  width: 632px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.game-grid div {
+  height: 75px;
+  width: 75px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  background-size: cover;
+  text-align: center;
+  line-height: 75px;
+  color: white;
+  font-size: 1.7rem;
+  cursor: pointer;
+  font-family: "Fredoka One", cursive;
+}
