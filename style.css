@@ -29,3 +29,12 @@ body {
   cursor: pointer;
   font-family: "Fredoka One", cursive;
 }
+
+.game-grid div:active,
+.game-grid div:focus {
+  cursor: grab;
+}
+
+.invisible {
+  opacity: 0;
+}

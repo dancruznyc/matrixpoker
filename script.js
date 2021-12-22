@@ -57,10 +57,12 @@ function dragStart() {
   cardDraggedSuit = this.dataset.suit;
   cardDraggedFace = this.innerText;
   cardIdDragged = parseInt(this.id);
+  setTimeout(() => this.classList.add("invisible"), 0);
   console.log(cardDraggedSuit, cardDraggedFace);
 }
 
 function dragEnd() {
+  this.classList.remove("invisible");
   // What is a Valid Move?
   let validMoves = [
     cardIdDragged - 1,
