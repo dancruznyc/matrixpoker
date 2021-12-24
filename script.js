@@ -2,12 +2,20 @@ const grid = document.querySelector(".game-grid");
 const marqueeMessage = document.querySelector(".marquee-content");
 const gameScoreDisplay = document.querySelector(".game-score");
 const roundScoreDisplay = document.querySelector(".round-score");
+const roundClockDisplay = document.querySelector(".game-timer");
 const width = 8;
 const cards = [];
+const shuffle = new Audio("sounds/shuffle.wav");
+const cardSound = new Audio("sounds/card-click.mp3");
+const gameMusic = new Audio("sounds/In-Summer.wav");
+const userMusicOption = true;
+gameMusic.loop = true;
+gameMusic.volume = 0.15;
 let round = 1;
 let roundStarted = false;
 let roundScore = 0;
 let gameScore = 0;
+let roundGoalMet = false;
 let roundGoals = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500];
 const suits = ["hearts", "diamonds", "spades", "clubs"];
 const faces = [
@@ -61,6 +69,15 @@ cards.forEach((card) => {
 });
 
 function dragStart() {
+  if (!cardSound.paused) {
+    cardSound.pause();
+    cardSound.currentTime = 0;
+    cardSound.play();
+  }
+  console.log(cardSound.paused);
+  cardSound.play();
+  console.log(cardSound.paused);
+
   cardDraggedSuit = this.dataset.suit;
   cardDraggedFace = this.innerText;
   cardIdDragged = parseInt(this.id);
@@ -127,7 +144,7 @@ function dragDrop() {
   checkRowOfThree();
   checkColumnOfThree();
   topRowBugFix();
-  moveTilesDown();
+  if (cards.some((card) => card.style.backgroundImage === "")) moveTilesDown();
 }
 
 // Match of 3 in a Row
@@ -434,6 +451,7 @@ function topRowBugFix() {
         card.style.backgroundImage = `url(/images/${suits[randomSuit]}.png)`;
         card.setAttribute("data-suit", suits[randomSuit]);
       }
+      shuffle.play();
     });
     return true;
   }
@@ -465,9 +483,25 @@ function moveTilesDown() {
       }
     }
   }
-
+  if (!cards.some((card) => card.style.backgroundImage === "")) shuffle.play();
   if (cards.some((card) => card.style.backgroundImage === "")) moveTilesDown();
-  else return;
+  else if (
+    checkForStraightRow() ||
+    checkForStraightColumn() ||
+    checkColumnOfFive() ||
+    checkRowOfFive() ||
+    checkForFlushRow() ||
+    checkForFlushColumn() ||
+    checkRowOfFour() ||
+    checkColumnOfFour() ||
+    checkRowOfThree() ||
+    checkColumnOfThree()
+  ) {
+    topRowBugFix();
+    moveTilesDown();
+  } else {
+    return;
+  }
 }
 
 function updateMarquee(message) {
@@ -481,6 +515,8 @@ function gameScoreUpdate(points, roundStarted) {
   length = 9;
   gameScore += points;
   roundScore += points;
+  if (roundScore >= roundGoals[round]) roundGoalMet = true;
+  else roundGoalMet = false;
   let gameScoreString = gameScore + "";
   let roundScoreString = roundScore + "";
   while (gameScoreString.length < length) {
@@ -492,3 +528,21 @@ function gameScoreUpdate(points, roundStarted) {
   gameScoreDisplay.innerText = gameScoreString;
   roundScoreDisplay.innerText = roundScoreString;
 }
+
+function roundClockUpdate() {
+  let timeInSeconds = 180;
+  const reduceTime = setInterval(() => {
+    timeInSeconds--;
+    let min = Math.floor(timeInSeconds / 60);
+    let sec = Math.floor(timeInSeconds % 60);
+    roundClockDisplay.innerText = `${min}:${sec < 10 ? "0" : ""}${sec}`;
+    if (timeInSeconds <= 0) {
+      roundScore = 0;
+      roundScoreDisplay.innerText = "000000000";
+      clearInterval(reduceTime);
+    }
+  }, 1000);
+}
+roundClockUpdate();
+
+// gameMusic.play();
