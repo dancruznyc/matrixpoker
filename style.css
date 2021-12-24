@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
 body {
   background-image: url(/images/matrixpokerbackground.png);
   background-size: cover;
@@ -32,9 +34,97 @@ body {
 
 .game-grid div:active,
 .game-grid div:focus {
-  cursor: grab;
+  cursor: grab !important;
 }
 
 .invisible {
   opacity: 0;
+}
+
+.score-board {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  height: 632px;
+  width: 250px;
+  background-color: rgba(225, 216, 207, 0.4);
+  border-radius: 10px;
+  margin-right: 10px;
+  font-family: "Press Start 2P", cursive;
+}
+
+.game-title {
+  font-family: "Fredoka One";
+  font-size: 35px;
+}
+
+.game-round {
+  position: relative;
+}
+
+.round-goal {
+  width: 100%;
+  text-align: center;
+}
+
+.game-score {
+  position: relative;
+}
+.game-score::before {
+  content: "Game Score";
+  position: absolute;
+  width: 10rem;
+  top: -30px;
+}
+.round-score {
+  position: relative;
+}
+
+.round-score::before {
+  content: "Round Score";
+  position: absolute;
+  width: 11rem;
+  top: -30px;
+}
+
+.new-deck {
+  width: 90%;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  color: rgb(133, 20, 20);
+  background-color: rgb(53, 135, 53);
+  border-radius: 10px;
+}
+
+.game-marquee {
+  width: 100%;
+  overflow: hidden;
+}
+.marquee-content {
+  list-style: none;
+  height: 100%;
+  display: flex;
+  animation: marqueeScroll 7s linear infinite;
+}
+
+.marquee-content li {
+  white-space: nowrap;
+  margin-right: 20px;
+}
+
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(140%);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  60% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-120%);
+  }
 }
