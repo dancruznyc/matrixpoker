@@ -3,15 +3,22 @@ const marqueeMessage = document.querySelector(".marquee-content");
 const gameScoreDisplay = document.querySelector(".game-score");
 const roundScoreDisplay = document.querySelector(".round-score");
 const roundClockDisplay = document.querySelector(".game-timer");
+const scoreBoard = document.querySelector(".score-board");
+const gameModal = document.querySelector(".game-modal");
+const modalDisplay = document.querySelector(".modal-display");
 const width = 8;
 const cards = [];
 const shuffle = new Audio("sounds/shuffle.wav");
 const cardSound = new Audio("sounds/card-click.mp3");
 const gameMusic = new Audio("sounds/In-Summer.wav");
 const userMusicOption = true;
+const highScores = [];
+document
+  .querySelectorAll(".high-scores")
+  .forEach((score) => highScores.push(score.innerText));
 gameMusic.loop = true;
-gameMusic.volume = 0.15;
-let round = 1;
+gameMusic.volume = 0.1;
+let round = 0;
 let roundStarted = false;
 let roundScore = 0;
 let gameScore = 0;
@@ -35,6 +42,8 @@ const faces = [
 ];
 
 function createBoard() {
+  console.log(grid);
+  if (!(grid.innerText === "")) grid.innerHTML = "";
   for (let i = 0; i < width * width; i++) {
     const card = document.createElement("div");
     let randomSuit = Math.floor(Math.random() * suits.length);
@@ -47,9 +56,8 @@ function createBoard() {
     grid.appendChild(card);
     cards.push(card);
   }
+  console.log(cards);
 }
-
-createBoard();
 
 // Dragging Feature
 let cardDraggedSuit;
@@ -59,16 +67,8 @@ let cardReplacedFace;
 let cardIdDragged;
 let cardIdReplaced;
 
-cards.forEach((card) => {
-  card.addEventListener("dragstart", dragStart);
-  card.addEventListener("dragend", dragEnd);
-  card.addEventListener("dragenter", dragEnter);
-  card.addEventListener("dragover", dragOver);
-  card.addEventListener("dragleave", dragLeave);
-  card.addEventListener("drop", dragDrop);
-});
-
 function dragStart() {
+  console.log("drag start");
   if (!cardSound.paused) {
     cardSound.pause();
     cardSound.currentTime = 0;
@@ -171,8 +171,6 @@ function checkRowOfThree() {
   }
 }
 
-checkRowOfThree();
-
 // Match of 3 in a Column
 function checkColumnOfThree() {
   for (i = 0; i <= 47; i++) {
@@ -194,7 +192,6 @@ function checkColumnOfThree() {
     }
   }
 }
-checkColumnOfThree();
 
 // Match of 4 in a Row
 function checkRowOfFour() {
@@ -530,19 +527,58 @@ function gameScoreUpdate(points, roundStarted) {
 }
 
 function roundClockUpdate() {
-  let timeInSeconds = 180;
+  let timeInSeconds = 30;
   const reduceTime = setInterval(() => {
     timeInSeconds--;
     let min = Math.floor(timeInSeconds / 60);
     let sec = Math.floor(timeInSeconds % 60);
     roundClockDisplay.innerText = `${min}:${sec < 10 ? "0" : ""}${sec}`;
     if (timeInSeconds <= 0) {
-      roundScore = 0;
       roundScoreDisplay.innerText = "000000000";
+      nextRound();
       clearInterval(reduceTime);
     }
   }, 1000);
 }
-roundClockUpdate();
 
-// gameMusic.play();
+const startRoundButton = document.querySelector(".game-button");
+startRoundButton.addEventListener("click", startRound);
+function startRound() {
+  roundScore = 0;
+  roundScore += 1000;
+  createBoard();
+  gameMusic.play();
+  roundClockUpdate();
+  console.log(scoreBoard);
+  scoreBoard.style.display = "flex";
+  gameModal.style.display = "none";
+  cards.forEach((card) => {
+    card.addEventListener("dragstart", dragStart);
+    card.addEventListener("dragend", dragEnd);
+    card.addEventListener("dragenter", dragEnter);
+    card.addEventListener("dragover", dragOver);
+    card.addEventListener("dragleave", dragLeave);
+    card.addEventListener("drop", dragDrop);
+  });
+}
+
+function nextRound() {
+  gameMusic.pause();
+  gameModal.style.display = "flex";
+  if (roundScore >= roundGoals[round] && round < 10) {
+    roundGoalMet = true;
+    const modalRoundDisplay = `
+    <p>
+    Round ${round + 1} Successful!
+    <ul>
+    <li>Round Score: ${roundScore}</li>
+    <li>Game Score: ${gameScore}</li>
+    </ul>
+    </p>
+    `;
+    modalDisplay.innerHTML = modalRoundDisplay;
+    grid.style.display = "none";
+    scoreBoard.style.display = "none";
+  } else if (roundScore < roundGoals[round]) {
+  }
+}

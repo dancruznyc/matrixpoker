@@ -42,7 +42,7 @@ body {
 }
 
 .score-board {
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
@@ -135,4 +135,38 @@ body {
   width: 900px;
   border-radius: 10px;
   background-color: rgba(242, 222, 186, 0.8);
+  font-family: "Press Start 2P";
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  color: green;
+}
+
+.modal-title {
+  font-size: 50px;
+}
+.game-modal ul {
+  list-style: none;
+  font-size: 25px;
+}
+
+.game-modal ul li {
+  margin-bottom: 15px;
+}
+
+.game-button {
+  width: 250px;
+  height: 60px;
+  border-radius: 10px;
+  outline: none;
+  font-size: 20px;
+  font-family: "Press Start 2P";
+  background-color: green;
+  color: brown;
+  cursor: pointer;
+}
+
+.modal-display h2 {
+  text-align: center;
 }
