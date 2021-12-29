@@ -6,18 +6,17 @@ const roundClockDisplay = document.querySelector(".game-timer");
 const scoreBoard = document.querySelector(".score-board");
 const gameModal = document.querySelector(".game-modal");
 const modalDisplay = document.querySelector(".modal-display");
+const roundDisplay = document.querySelector(".game-round");
+const roundGoalDisplay = document.querySelector(".round-goal");
 const width = 8;
 const cards = [];
 const shuffle = new Audio("sounds/shuffle.wav");
 const cardSound = new Audio("sounds/card-click.mp3");
 const gameMusic = new Audio("sounds/In-Summer.wav");
 const userMusicOption = true;
-const highScores = [];
-document
-  .querySelectorAll(".high-scores")
-  .forEach((score) => highScores.push(score.innerText));
+
 gameMusic.loop = true;
-gameMusic.volume = 0.1;
+gameMusic.volume = 0.05;
 let round = 0;
 let roundStarted = false;
 let roundScore = 0;
@@ -58,6 +57,17 @@ function createBoard() {
   }
   console.log(cards);
 }
+
+createBoard();
+
+cards.forEach((card) => {
+  card.addEventListener("dragstart", dragStart);
+  card.addEventListener("dragend", dragEnd);
+  card.addEventListener("dragenter", dragEnter);
+  card.addEventListener("dragover", dragOver);
+  card.addEventListener("dragleave", dragLeave);
+  card.addEventListener("drop", dragDrop);
+});
 
 // Dragging Feature
 let cardDraggedSuit;
@@ -158,7 +168,7 @@ function checkRowOfThree() {
     if (
       rowOfThree.every((i) => cards[i].innerText === faceToMatch && !isBlank)
     ) {
-      gameScoreUpdate(100);
+      gameScoreUpdate(5000);
       rowOfThree.forEach((index) => {
         cards[index].style.backgroundImage = "";
         cards[index].innerText = "";
@@ -545,40 +555,90 @@ const startRoundButton = document.querySelector(".game-button");
 startRoundButton.addEventListener("click", startRound);
 function startRound() {
   roundScore = 0;
-  roundScore += 1000;
-  createBoard();
+  grid.classList.remove("invisible");
   gameMusic.play();
+  grid.style.display = "flex";
   roundClockUpdate();
-  console.log(scoreBoard);
   scoreBoard.style.display = "flex";
   gameModal.style.display = "none";
-  cards.forEach((card) => {
-    card.addEventListener("dragstart", dragStart);
-    card.addEventListener("dragend", dragEnd);
-    card.addEventListener("dragenter", dragEnter);
-    card.addEventListener("dragover", dragOver);
-    card.addEventListener("dragleave", dragLeave);
-    card.addEventListener("drop", dragDrop);
-  });
 }
 
 function nextRound() {
   gameMusic.pause();
   gameModal.style.display = "flex";
-  if (roundScore >= roundGoals[round] && round < 10) {
+  scoreBoard.style.display = "none";
+  grid.classList.add("invisible");
+  if (roundScore >= roundGoals[round] && round < 9) {
     roundGoalMet = true;
     const modalRoundDisplay = `
-    <p>
-    Round ${round + 1} Successful!
+    
+    <h2>Round ${round + 1} Successful!</h2>
     <ul>
     <li>Round Score: ${roundScore}</li>
     <li>Game Score: ${gameScore}</li>
     </ul>
-    </p>
+    
     `;
+    roundDisplay.innerText = `Round: ${round + 2}`;
     modalDisplay.innerHTML = modalRoundDisplay;
-    grid.style.display = "none";
-    scoreBoard.style.display = "none";
+    startRoundButton.innerText = `Start Round ${round + 2}`;
+    round++;
+    roundScore = 0;
+    roundGoalDisplay.innerText = `Round Goal: ${roundGoals[round]}`;
   } else if (roundScore < roundGoals[round]) {
+    modalDisplay.innerHTML = updateHighScore(gameScore);
+    console.log(modalDisplay);
+    startRoundButton.innerText = `Start Game`;
+    round = 0;
+    gameScore = 0;
+    roundScore = 0;
+    gameScoreDisplay.innerText = "000000000";
+    roundDisplay.innerText = `Round: ${round + 1}`;
+    roundGoalDisplay.innerText = `Round Goal: ${roundGoals[round]}`;
+  } else if (roundScore >= roundGoals[round] && round === 9) {
+    modalDisplay.innerHTML = updateHighScore(gameScore);
+    startRoundButton.innerText = `Start Game`;
+    round = 0;
+    gameScore = 0;
+    roundScore = 0;
+    gameScoreDisplay.innerText = "000000000";
+    roundDisplay.innerText = `Round: ${round + 1}`;
+    roundGoalDisplay.innerText = `Round Goal: ${roundGoals[round]}`;
   }
 }
+
+let highScores = [
+  { name: "DAN", score: "000000000" },
+  { name: "ABC", score: "000000000" },
+  { name: "QQQ", score: "000000000" },
+];
+
+function updateHighScore(score) {
+  console.log(highScores);
+  if (highScores.some((oldScores) => score > oldScores.score)) {
+    let name = getUsersName();
+    let index = highScores.findIndex((oldScores) => score > oldScores.score);
+    highScores.splice(index, 0, {
+      name: name.toUpperCase(),
+      score: score,
+    });
+  }
+  highScores.pop();
+  console.log(highScores);
+  const highScoreHTML = `
+  ${
+    round === 9 && roundScore >= roundGoals[round]
+      ? "<h2>Congratulations! Game Completed!</h2>"
+      : "<h2>Game Over</h2>"
+  }
+  <h2>High Scores</h2>
+  <ul>
+  <li class="high-scores">${highScores[0].name} - ${highScores[0].score}</li>
+  <li class="high-scores">${highScores[1].name} - ${highScores[1].score}</li>
+  <li class="high-scores">${highScores[2].name} - ${highScores[2].score}</li>
+  </ul>
+  `;
+  return highScoreHTML;
+}
+
+function getUsersName() {}
