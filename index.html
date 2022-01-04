@@ -34,14 +34,32 @@
       <h1 class="modal-title">Matrix Poker</h1>
       <div class="modal-display">
         <h2>High Scores</h2>
-        <ul>
-          <li class="high-scores">Dan - 000000000</li>
-          <li class="high-scores">ABC - 000000000</li>
-          <li class="high-scores">QQQ - 000000000</li>
-        </ul>
+        <ul class="high-scores-list"></ul>
       </div>
       <button class="game-button">Start Game</button>
       <p>created by Daniel De La Cruz, 2021</p>
+    </div>
+    <div class="name-input-modal">
+      <h2>Enter Name</h2>
+      <input type="text" class="name-input" maxlength="3" />
+      <input type="submit" class="name-btn" />
+    </div>
+
+    <div class="sound-toggles">
+      <div class="toggle-container">
+        <label class="toggle-control">
+          <input type="checkbox" checked="checked" name="music" />
+          <span class="control"></span>
+        </label>
+        <span>Music</span>
+      </div>
+      <div class="toggle-container">
+        <label class="toggle-control">
+          <input type="checkbox" checked="checked" name="soundfx" />
+          <span class="control"></span>
+        </label>
+        <span>Sound F/X</span>
+      </div>
     </div>
     <script src="script.js"></script>
   </body>

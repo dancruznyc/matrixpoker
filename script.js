@@ -8,12 +8,22 @@ const gameModal = document.querySelector(".game-modal");
 const modalDisplay = document.querySelector(".modal-display");
 const roundDisplay = document.querySelector(".game-round");
 const roundGoalDisplay = document.querySelector(".round-goal");
+const highScoresInit = document.querySelector(".high-scores-list");
 const width = 8;
-const cards = [];
+let cards = [];
 const shuffle = new Audio("sounds/shuffle.wav");
 const cardSound = new Audio("sounds/card-click.mp3");
 const gameMusic = new Audio("sounds/In-Summer.wav");
 const userMusicOption = true;
+const newDeckBtn = document.querySelector(".new-deck");
+let newdecks = 3;
+let highScores = [];
+getHighScores();
+highScoresInit.innerHTML = `
+ <li class="high-scores">${highScores[0].name} - ${highScores[0].score}</li>
+  <li class="high-scores">${highScores[1].name} - ${highScores[1].score}</li>
+  <li class="high-scores">${highScores[2].name} - ${highScores[2].score}</li>
+`;
 
 gameMusic.loop = true;
 gameMusic.volume = 0.05;
@@ -42,7 +52,9 @@ const faces = [
 
 function createBoard() {
   console.log(grid);
-  if (!(grid.innerText === "")) grid.innerHTML = "";
+  if (!(grid.innerText === "")) {
+    grid.innerHTML = "";
+  }
   for (let i = 0; i < width * width; i++) {
     const card = document.createElement("div");
     let randomSuit = Math.floor(Math.random() * suits.length);
@@ -84,9 +96,8 @@ function dragStart() {
     cardSound.currentTime = 0;
     cardSound.play();
   }
-  console.log(cardSound.paused);
+  console.log(this.dataset.suit);
   cardSound.play();
-  console.log(cardSound.paused);
 
   cardDraggedSuit = this.dataset.suit;
   cardDraggedFace = this.innerText;
@@ -563,12 +574,15 @@ function startRound() {
   gameModal.style.display = "none";
 }
 
-function nextRound() {
+async function nextRound() {
   gameMusic.pause();
-  gameModal.style.display = "flex";
+  newdecks = 3;
+  newDeckBtn.innerText = `New Deck: ${newdecks}`;
+
   scoreBoard.style.display = "none";
   grid.classList.add("invisible");
   if (roundScore >= roundGoals[round] && round < 9) {
+    gameModal.style.display = "flex";
     roundGoalMet = true;
     const modalRoundDisplay = `
     
@@ -586,7 +600,8 @@ function nextRound() {
     roundScore = 0;
     roundGoalDisplay.innerText = `Round Goal: ${roundGoals[round]}`;
   } else if (roundScore < roundGoals[round]) {
-    modalDisplay.innerHTML = updateHighScore(gameScore);
+    modalDisplay.innerHTML = await updateHighScore(gameScore);
+    gameModal.style.display = "flex";
     console.log(modalDisplay);
     startRoundButton.innerText = `Start Game`;
     round = 0;
@@ -596,7 +611,8 @@ function nextRound() {
     roundDisplay.innerText = `Round: ${round + 1}`;
     roundGoalDisplay.innerText = `Round Goal: ${roundGoals[round]}`;
   } else if (roundScore >= roundGoals[round] && round === 9) {
-    modalDisplay.innerHTML = updateHighScore(gameScore);
+    modalDisplay.innerHTML = await updateHighScore(gameScore);
+    gameModal.style.display = "flex";
     startRoundButton.innerText = `Start Game`;
     round = 0;
     gameScore = 0;
@@ -607,24 +623,21 @@ function nextRound() {
   }
 }
 
-let highScores = [
-  { name: "DAN", score: "000000000" },
-  { name: "ABC", score: "000000000" },
-  { name: "QQQ", score: "000000000" },
-];
-
-function updateHighScore(score) {
+async function updateHighScore(score) {
   console.log(highScores);
   if (highScores.some((oldScores) => score > oldScores.score)) {
-    let name = getUsersName();
+    let name = await getUsersName();
     let index = highScores.findIndex((oldScores) => score > oldScores.score);
+
     highScores.splice(index, 0, {
       name: name.toUpperCase(),
       score: score,
     });
+    highScores.pop();
   }
-  highScores.pop();
-  console.log(highScores);
+
+  localStorage.setItem("highScores", JSON.stringify(highScores));
+
   const highScoreHTML = `
   ${
     round === 9 && roundScore >= roundGoals[round]
@@ -632,7 +645,7 @@ function updateHighScore(score) {
       : "<h2>Game Over</h2>"
   }
   <h2>High Scores</h2>
-  <ul>
+  <ul class="high-scores-list">
   <li class="high-scores">${highScores[0].name} - ${highScores[0].score}</li>
   <li class="high-scores">${highScores[1].name} - ${highScores[1].score}</li>
   <li class="high-scores">${highScores[2].name} - ${highScores[2].score}</li>
@@ -641,4 +654,67 @@ function updateHighScore(score) {
   return highScoreHTML;
 }
 
-function getUsersName() {}
+const nameModal = document.querySelector(".name-input-modal");
+
+async function getUsersName(name) {
+  nameModal.style.display = "flex";
+  return new Promise((resolve, reject) => {
+    document.querySelector(".name-btn").addEventListener("click", () => {
+      console.log("123");
+      resolve(document.querySelector(".name-input").value);
+      console.log(document.querySelector(".name-input").value);
+      nameModal.style.display = "none";
+    });
+  });
+}
+
+function getHighScores() {
+  if (localStorage.getItem("highScores") === null) {
+    highScores = [
+      { name: "DAN", score: "000000000" },
+      { name: "ABC", score: "000000000" },
+      { name: "QQQ", score: "000000000" },
+    ];
+    return;
+  } else {
+    highScores = JSON.parse(localStorage.getItem("highScores"));
+  }
+  console.log(highScores);
+}
+
+const musicCheckBox = document.querySelector("input[name=music");
+const soundFXCheckBox = document.querySelector("input[name=soundfx");
+
+musicCheckBox.addEventListener("change", (e) => {
+  if (e.target.checked === true) {
+    gameMusic.muted = false;
+  } else gameMusic.muted = true;
+});
+
+soundFXCheckBox.addEventListener("change", (e) => {
+  if (e.target.checked === true) {
+    cardSound.muted = false;
+    shuffle.muted = false;
+  } else {
+    cardSound.muted = true;
+    shuffle.muted = true;
+  }
+});
+
+newDeckBtn.addEventListener("click", newDeck);
+
+function newDeck() {
+  if (newdecks === 0) return;
+  cards = [];
+  createBoard();
+  newdecks--;
+  newDeckBtn.innerText = `New Deck: ${newdecks}`;
+  cards.forEach((card) => {
+    card.addEventListener("dragstart", dragStart);
+    card.addEventListener("dragend", dragEnd);
+    card.addEventListener("dragenter", dragEnter);
+    card.addEventListener("dragover", dragOver);
+    card.addEventListener("dragleave", dragLeave);
+    card.addEventListener("drop", dragDrop);
+  });
+}

@@ -96,6 +96,9 @@ body {
   color: rgb(133, 20, 20);
   background-color: rgb(53, 135, 53);
   border-radius: 10px;
+  cursor: pointer;
+  border: green 1px solid;
+  user-select: none;
 }
 
 .game-marquee {
@@ -171,3 +174,157 @@ body {
 .modal-display h2 {
   text-align: center;
 }
+
+.name-input-modal {
+  position: fixed;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 400px;
+  height: 200px;
+  background-color: rgba(242, 222, 186, 0.7);
+  color: green;
+  border-radius: 10px;
+  display: none;
+  font-family: "Press Start 2P";
+}
+
+.name-input {
+  width: 150px;
+  height: 40px;
+  outline: none;
+  font-size: 35px;
+}
+
+.name-btn {
+  width: 150px;
+  height: 40px;
+  border-radius: 10px;
+  outline: none;
+  font-family: "Press Start 2P";
+  font-size: 18px;
+  background-color: green;
+  color: brown;
+  cursor: pointer;
+}
+
+/* ----------------------Toggle Buttons----------------------------*/
+
+.toggle-control {
+  display: block;
+  position: relative;
+  padding-left: 40px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.toggle-control input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.toggle-control input:checked ~ .control {
+  background-color: green;
+}
+.toggle-control input:checked ~ .control:after {
+  left: 25px;
+}
+.toggle-control .control {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 40px;
+  border-radius: 10px;
+  background-color: darkgray;
+  transition: background-color 0.15s ease-in;
+}
+.toggle-control .control:after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  background: white;
+  transition: left 0.15s ease-in;
+}
+
+/* Center the control */
+.toggle-control {
+  display: block;
+  position: relative;
+  padding-left: 40px;
+  margin-bottom: 12px;
+  margin-right: 8px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.toggle-control input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.toggle-control input:checked ~ .control {
+  background-color: green;
+}
+.toggle-control input:checked ~ .control:after {
+  left: 25px;
+}
+.toggle-control .control {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 40px;
+  border-radius: 10px;
+  background-color: darkgray;
+  transition: background-color 0.15s ease-in;
+}
+.toggle-control .control:after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  background: white;
+  transition: left 0.15s ease-in;
+}
+
+/* Center the control */
+.sound-toggles {
+  position: fixed;
+  top: 60px;
+  right: 100px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  color: rgb(234, 240, 234);
+  font-family: "Fredoka One";
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.toggle-container {
+  margin-bottom: 10px;
+  display: flex;
+}
+
+/* -----------------------------Toggles End-------------------------- */
