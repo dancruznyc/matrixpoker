@@ -61,7 +61,7 @@ function createBoard() {
     let randomFace = Math.floor(Math.random() * faces.length);
     card.innerText = faces[randomFace];
     card.setAttribute("draggable", true);
-    card.style.backgroundImage = `url(/images/${suits[randomSuit]}.png)`;
+    card.style.backgroundImage = `url(./images/${suits[randomSuit]}.png)`;
     card.setAttribute("data-suit", suits[randomSuit]);
     card.setAttribute("id", i);
     grid.appendChild(card);
