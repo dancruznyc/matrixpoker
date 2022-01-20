@@ -146,12 +146,12 @@ function dragDrop() {
   cardReplacedSuit = this.dataset.suit;
   cardReplacedFace = this.innerText;
   cardIdReplaced = parseInt(this.id);
-  this.style.backgroundImage = `url(/images/${cardDraggedSuit}.png)`;
+  this.style.backgroundImage = `url(./images/${cardDraggedSuit}.png)`;
   this.innerText = cardDraggedFace;
   this.setAttribute("data-suit", cardDraggedSuit);
   cards[
     cardIdDragged
-  ].style.backgroundImage = `url(/images/${cardReplacedSuit}.png)`;
+  ].style.backgroundImage = `url(./images/${cardReplacedSuit}.png)`;
   cards[cardIdDragged].innerText = cardReplacedFace;
   cards[cardIdDragged].setAttribute("data-suit", cardReplacedSuit);
   checkForStraightRow();
